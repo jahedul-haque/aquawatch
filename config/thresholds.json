@@ -16,9 +16,9 @@
       865.4025,
       865.985
     ],
-    "device_eui": "0123456789ABCDEF",
+    "device_eui": "xx",
     "app_eui": "0000000000000000",
-    "app_key": "2B7E151628AED2A6ABF7158809CF4F3C",
+    "app_key": "xxx",
     "f_port": 10,
     "f_port_alert": 15,
     "confirmed_uplink_on_alert": true,
