@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaWatch - Water Quality Monitor</title>
+    <link rel="stylesheet" href="/static/style.css?v=12">
+</head>
+<body>
+    <div class="container">
+
+        <!-- Header -->
+        <header class="navbar">
+            <div class="brand">
+                <h1>AquaWatch</h1>
+                <span class="subtitle">Water Quality Monitoring System</span>
+            </div>
+            <div class="system-status">
+                <span class="status-badge status-safe" id="overallBadge">Safe</span>
+                <span class="wqi-score" id="overallWqi">WQI: 98</span>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="grid">
+
+            <!-- Left Column: Camera and Classifications -->
+            <div class="col-left">
+
+                <!-- Camera Box -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Camera View</h2>
+                        <span class="badge-subtle" id="cameraStatus">Connected</span>
+                    </div>
+                    <div class="image-wrapper">
+                        <img id="rawCameraImg" src="/api/camera_snapshot" alt="Camera Feed">
+                    </div>
+                    <div class="camera-actions">
+                        <button class="btn btn-primary" id="btnSampleNow" onclick="sampleNow()">Take Sample</button>
+                        <span class="text-muted">Updated: <strong id="lastSampleTime">--:--:--</strong> (Next in <strong id="countdownVal">10m 00s</strong>)</span>
+                    </div>
+                </div>
+
+                <!-- Classifications Box -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Classifications</h2>
+                    </div>
+                    <div class="class-list">
+
+                        <div class="class-item">
+                            <div class="class-title-row">
+                                <span class="class-source">Camera</span>
+                                <span class="badge badge-safe" id="camClassBadge">Clean Water</span>
+                            </div>
+                            <p class="class-desc" id="camClassDesc">Clear water, no visible impurities</p>
+                        </div>
+
+                        <div class="class-item">
+                            <div class="class-title-row">
+                                <span class="class-source">Sensors</span>
+                                <span class="badge badge-safe" id="sensorClassBadge">Normal</span>
+                            </div>
+                            <p class="class-desc" id="sensorClassDesc">Normal readings. Turbidity 0.10 NTU. (Temp probe not connected).</p>
+                        </div>
+
+                        <div class="class-item">
+                            <div class="class-title-row">
+                                <span class="class-source">AS7341 Spectrometer</span>
+                                <span class="badge badge-neutral" id="specClassBadge">Not Connected</span>
+                            </div>
+                            <p class="class-desc" id="specClassDesc">Spectrometer probe not connected.</p>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Calibration & One-Shot Learning Box -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>System Calibration</h2>
+                        <span class="badge-subtle" id="calibStatusBadge">Factory Default</span>
+                    </div>
+                    <p class="text-muted mb-2">
+                        Calibrate baseline zero using real clean water, or teach the system with one-shot prototype learning for local water conditions.
+                    </p>
+                    <div class="calib-controls">
+                        <div class="calib-row">
+                            <label for="calibCategorySelect" class="calib-label">Target Water Category:</label>
+                            <select id="calibCategorySelect" class="form-select">
+                                <option value="Clean_Potable">Clean Potable Water (Baseline Zero)</option>
+                                <option value="Suspended_Sediment">High Turbidity / Muddy Water</option>
+                                <option value="Algae_Biofilm">Algae / Green Water</option>
+                                <option value="Chemical_Discoloration">Chemical / Discolored Water</option>
+                                <option value="Hydrocarbon_Sheen">Oil / Surface Sheen</option>
+                            </select>
+                        </div>
+                        <div class="calib-actions">
+                            <button class="btn btn-primary btn-sm" id="btnCalibLearn" onclick="calibrateCurrentSample()">Learn Sample</button>
+                            <button class="btn btn-sm" id="btnCalibReset" onclick="resetCalibration()">Reset</button>
+                        </div>
+                    </div>
+                    <div class="calib-status-box" id="calibStatusBox">
+                        <span class="text-muted" id="calibStatusText">Current profile: Factory default (Uncalibrated)</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: Sensor Readings Table & LoRaWAN -->
+            <div class="col-right">
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Sensor Readings</h2>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Sensor</th>
+                                <th>Value</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Temperature</td>
+                                <td class="text-muted" id="cellTemp">Not connected</td>
+                                <td><span class="status-pill pill-off" id="statusTemp">Not connected</span></td>
+                            </tr>
+                            <tr>
+                                <td>Turbidity</td>
+                                <td id="cellTurb">0.10 NTU</td>
+                                <td><span class="status-pill pill-ok" id="statusTurb">Connected</span></td>
+                            </tr>
+                            <tr>
+                                <td>pH</td>
+                                <td class="text-muted" id="cellPh">Not connected</td>
+                                <td><span class="status-pill pill-off" id="statusPh">Not connected</span></td>
+                            </tr>
+                            <tr>
+                                <td>ORP</td>
+                                <td class="text-muted" id="cellOrp">Not connected</td>
+                                <td><span class="status-pill pill-off" id="statusOrp">Not connected</span></td>
+                            </tr>
+                            <tr>
+                                <td>TDS</td>
+                                <td class="text-muted" id="cellTds">Not connected</td>
+                                <td><span class="status-pill pill-off" id="statusTds">Not connected</span></td>
+                            </tr>
+                            <tr>
+                                <td>AS7341 (Spectrometer)</td>
+                                <td class="text-muted" id="cellSpectral">Not connected</td>
+                                <td><span class="status-pill pill-off" id="statusSpectral">Not connected</span></td>
+                            </tr>
+                            <tr>
+                                <td>Camera</td>
+                                <td id="cellCamera">Connected</td>
+                                <td><span class="status-pill pill-ok" id="statusCamera">Connected</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- AS7341 Spectral Channels Box -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>AS7341 Spectral Channels</h2>
+                        <span class="badge-subtle pill-off" id="spectralStatusBadge">Not connected</span>
+                    </div>
+                    <div class="spectral-grid">
+                        <div class="spec-channel">
+                            <span class="spec-ch-name">F1 415nm</span>
+                            <span class="spec-ch-val text-muted" id="specF1">--</span>
+                        </div>
+                        <div class="spec-channel">
+                            <span class="spec-ch-name">F2 445nm</span>
+                            <span class="spec-ch-val text-muted" id="specF2">--</span>
+                        </div>
+                        <div class="spec-channel">
+                            <span class="spec-ch-name">F3 480nm</span>
+                            <span class="spec-ch-val text-muted" id="specF3">--</span>
+                        </div>
+                        <div class="spec-channel">
+                            <span class="spec-ch-name">F4 515nm</span>
+                            <span class="spec-ch-val text-muted" id="specF4">--</span>
+                        </div>
+                        <div class="spec-channel">
+                            <span class="spec-ch-name">F5 555nm</span>
+                            <span class="spec-ch-val text-muted" id="specF5">--</span>
+                        </div>
+                        <div class="spec-channel">
+                            <span class="spec-ch-name">F6 590nm</span>
+                            <span class="spec-ch-val text-muted" id="specF6">--</span>
+                        </div>
+                        <div class="spec-channel">
+                            <span class="spec-ch-name">F7 630nm</span>
+                            <span class="spec-ch-val text-muted" id="specF7">--</span>
+                        </div>
+                        <div class="spec-channel">
+                            <span class="spec-ch-name">F8 680nm</span>
+                            <span class="spec-ch-val text-muted" id="specF8">--</span>
+                        </div>
+                        <div class="spec-channel">
+                            <span class="spec-ch-name">Clear</span>
+                            <span class="spec-ch-val text-muted" id="specClear">--</span>
+                        </div>
+                        <div class="spec-channel">
+                            <span class="spec-ch-name">NIR 910nm</span>
+                            <span class="spec-ch-val text-muted" id="specNIR">--</span>
+                        </div>
+                    </div>
+                    <div class="spectral-indices">
+                        <div class="spec-index-item">
+                            <span class="diag-label">Algae NDAI:</span>
+                            <strong class="mono-text" id="specIndexNdai">--</strong>
+                        </div>
+                        <div class="spec-index-item">
+                            <span class="diag-label">CDOM Index:</span>
+                            <strong class="mono-text" id="specIndexCdom">--</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LoRaWAN Box -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>LoRaWAN Telemetry</h2>
+                        <span class="badge-subtle pill-off" id="loraStatusBadge">Node not found</span>
+                    </div>
+                    <div class="diag-list">
+                        <div class="diag-row">
+                            <span class="diag-label">Hardware Link:</span>
+                            <span class="diag-value" id="loraHwStatus">Node not found</span>
+                        </div>
+                        <div class="diag-row">
+                            <span class="diag-label">Device EUI (DevEUI):</span>
+                            <div class="eui-wrapper">
+                                <code class="mono-text" id="loraDevEui">Not connected</code>
+                                <button class="btn btn-sm" id="btnCopyEui" onclick="copyDevEui()" title="Copy DevEUI" style="display:none;">Copy</button>
+                                <button class="btn btn-sm" id="btnToggleSetEui" onclick="toggleSetDevEuiUI()">Set</button>
+                            </div>
+                        </div>
+                        <!-- Inline DevEUI setter form -->
+                        <div class="set-eui-box" id="setEuiBox" style="display: none; margin: 4px 0 8px 0;">
+                            <div style="display: flex; gap: 6px;">
+                                <input type="text" id="inputNewDevEui" class="form-input mono-text" placeholder="16-hex DevEUI" maxlength="16" style="flex: 1; padding: 4px 8px; font-size: 12px; border: 1px solid #d0d7de; border-radius: 4px;">
+                                <button class="btn btn-primary btn-sm" id="btnSaveDevEui" onclick="setDevEui()">Save</button>
+                                <button class="btn btn-sm" onclick="toggleSetDevEuiUI()">Cancel</button>
+                            </div>
+                            <span class="text-muted" id="setEuiMsg" style="display:block; margin-top: 4px; font-size: 11px;"></span>
+                        </div>
+                        <div class="diag-row">
+                            <span class="diag-label">AppSKey (AT):</span>
+                            <code class="mono-text" id="loraAppSKey">Not connected</code>
+                        </div>
+                        <div class="diag-row">
+                            <span class="diag-label">Modem Model:</span>
+                            <span class="diag-value" id="loraModem">Not detected</span>
+                        </div>
+                        <div class="diag-row">
+                            <span class="diag-label">Band / Region:</span>
+                            <span class="diag-value" id="loraRegion">Not connected</span>
+                        </div>
+                        <div class="diag-row">
+                            <span class="diag-label">Last Transmission:</span>
+                            <span class="diag-value" id="loraLastTime">None</span>
+                        </div>
+                        <div class="diag-row">
+                            <span class="diag-label">Port & Type:</span>
+                            <span class="diag-value" id="loraLastPort">--</span>
+                        </div>
+                    </div>
+
+                    <div class="payload-box">
+                        <div class="payload-header">
+                            <span class="payload-title">Last Message Sent (Raw Payload)</span>
+                            <span class="payload-len" id="loraPayloadLen">--</span>
+                        </div>
+                        <pre class="payload-hex" id="loraPayloadHex">No transmission</pre>
+                        <div class="payload-decoded" id="loraPayloadDecoded">
+                            No LoRa node connected
+                        </div>
+                    </div>
+
+                    <div class="lora-actions">
+                        <span class="text-muted" id="loraTxStatus">Status: LoRa node not found</span>
+                        <div style="display: flex; gap: 6px;">
+                            <button class="btn btn-sm" id="btnProbeLora" onclick="probeLoraNode()">Scan Node</button>
+                            <button class="btn btn-sm" id="btnJoinLora" onclick="triggerLoraJoin()" disabled>Join (AT+CJOIN)</button>
+                            <button class="btn btn-sm btn-primary" id="btnSendLora" onclick="sendTestUplink()" disabled>Send Uplink</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LoRa Serial Passthrough (AT Terminal) -->
+                <div class="card lora-terminal-card">
+                    <div class="card-header">
+                        <h2>LoRa Serial Passthrough</h2>
+                        <span class="badge-subtle pill-ok" id="terminalStatusBadge">D0/D1 @ 115200</span>
+                    </div>
+                    <div class="terminal-container">
+                        <!-- Scrollable Monospace Terminal Output -->
+                        <div class="terminal-console" id="loraTerminalOutput">
+                            <div class="terminal-line terminal-system">// ASR6501 LoRa Serial Passthrough Ready</div>
+                            <div class="terminal-line terminal-system">// Hardware: Arduino Uno Q Pins D0/D1 (Serial1 @ 115200)</div>
+                            <div class="terminal-line terminal-system">// Type an AT command or click a quick chip below:</div>
+                        </div>
+
+                        <!-- Quick Action Chips -->
+                        <div class="terminal-chips">
+                            <button type="button" class="chip-btn" onclick="sendTerminalChip('AT')" title="Test AT communication">AT</button>
+                            <button type="button" class="chip-btn" onclick="sendTerminalChip('AT+CGMM?')" title="Query modem model">Model</button>
+                            <button type="button" class="chip-btn" onclick="sendTerminalChip('AT+CDEVEUI?')" title="Query DevEUI">DevEUI</button>
+                            <button type="button" class="chip-btn" onclick="sendTerminalChip('AT+CJOIN')" title="Initiate OTAA network join">AT+CJOIN</button>
+                            <button type="button" class="chip-btn" onclick="sendTerminalChip('AT+CJOIN?')" title="Query join status">CJOIN?</button>
+                            <button type="button" class="chip-btn" onclick="sendTerminalChip('AT+CSTATUS?')" title="Query network join status">Status</button>
+                            <button type="button" class="chip-btn" onclick="sendTerminalChip('AT+CSQ?')" title="Query Signal Quality (RSSI/SNR)">RSSI/SNR</button>
+                            <button type="button" class="chip-btn" onclick="sendTerminalChip('help')" title="List supported commands">Help</button>
+                            <button type="button" class="chip-btn chip-clear" onclick="clearTerminal()" title="Clear terminal console">Clear</button>
+                        </div>
+
+                        <!-- Command Input Row -->
+                        <div class="terminal-input-row">
+                            <span class="terminal-prompt">&gt;</span>
+                            <input type="text" id="loraTerminalInput" class="terminal-input mono-text" 
+                                   placeholder="Type AT command (e.g. AT+CSTATUS?)..." 
+                                   autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                            <button type="button" class="btn btn-primary btn-sm" id="btnSendTerminal" onclick="sendTerminalInput()">Send</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Diagnostics & Testing -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>System Diagnostics</h2>
+                    </div>
+                    <div class="diag-list">
+                        <div class="diag-row">
+                            <span class="diag-label">LoRaWAN Link:</span>
+                            <span class="diag-value" id="loraStatus">Active (IN865)</span>
+                        </div>
+                        <div class="diag-row">
+                            <span class="diag-label">SD Card:</span>
+                            <span class="diag-value" id="sdStatus">Logging enabled</span>
+                        </div>
+                        <div class="diag-row">
+                            <span class="diag-label">Test Simulation:</span>
+                            <select id="simScenarioSelect" onchange="injectSelectedScenario(this.value)" class="form-select">
+                                <option value="normal">Normal (Clean Water)</option>
+                                <option value="algal_bloom">Simulate: Algae Bloom</option>
+                                <option value="sewage">Simulate: Sewage Contamination</option>
+                                <option value="pipe_burst">Simulate: High Turbidity / Mud</option>
+                                <option value="sheen">Simulate: Oil Sheen</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <span>AquaWatch • Arduino Uno Q (Qualcomm QRB2210 + STM32U585)</span>
+        </footer>
+
+    </div>
+
+    <script src="/static/app.js?v=14"></script>
+</body>
+</html>

@@ -1,0 +1,664 @@
+/* AquaWatch - Simple, Clean Water Monitor Styles */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: #f6f8fa;
+    color: #24292f;
+    line-height: 1.5;
+    padding: 20px 16px;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* Navbar / Header */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    padding: 14px 20px;
+    margin-bottom: 16px;
+}
+
+.brand h1 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1f2328;
+}
+
+.brand .subtitle {
+    font-size: 13px;
+    color: #656d76;
+}
+
+.system-status {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.status-badge {
+    font-size: 13px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 4px;
+}
+
+.status-safe {
+    background: #dafbe1;
+    color: #1a7f37;
+}
+
+.status-warn {
+    background: #fff8c5;
+    color: #9a6700;
+}
+
+.status-alert {
+    background: #ffebe9;
+    color: #cf222e;
+}
+
+.wqi-score {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1f2328;
+}
+
+/* Grid Layout */
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Cards */
+.card {
+    background: #ffffff;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #eaeef2;
+}
+
+.card-header h2 {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1f2328;
+}
+
+.badge-subtle {
+    font-size: 12px;
+    color: #57606a;
+    background: #f6f8fa;
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid #d0d7de;
+}
+
+/* Camera */
+.image-wrapper {
+    background: #1f2328;
+    border: 1px solid #d0d7de;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    aspect-ratio: 4 / 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.camera-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* Buttons */
+.btn {
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: background 0.15s ease;
+}
+
+.btn-primary {
+    background-color: #0969da;
+    color: #ffffff;
+    border-color: rgba(27, 31, 36, 0.15);
+}
+
+.btn-primary:hover {
+    background-color: #0858b7;
+}
+
+.btn-primary:disabled {
+    background-color: #80b3eb;
+    cursor: not-allowed;
+}
+
+.btn-sm {
+    font-size: 12px;
+    padding: 3px 8px;
+    background-color: #f6f8fa;
+    color: #24292f;
+    border: 1px solid #d0d7de;
+}
+
+.btn-sm:hover {
+    background-color: #eaeef2;
+}
+
+.btn-sm:active {
+    background-color: #d8dee4;
+}
+
+.text-muted {
+    font-size: 12px;
+    color: #57606a;
+}
+
+/* Classifications List */
+.class-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.class-item {
+    background: #f6f8fa;
+    border: 1px solid #d0d7de;
+    border-radius: 4px;
+    padding: 10px 12px;
+}
+
+.class-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.class-source {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1f2328;
+}
+
+.badge {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.badge-safe {
+    background: #dafbe1;
+    color: #1a7f37;
+}
+
+.badge-warn {
+    background: #fff8c5;
+    color: #9a6700;
+}
+
+.badge-alert {
+    background: #ffebe9;
+    color: #cf222e;
+}
+
+.badge-neutral {
+    background: #eaeef2;
+    color: #57606a;
+}
+
+.class-desc {
+    font-size: 13px;
+    color: #57606a;
+}
+
+/* Tables */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.table th,
+.table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #eaeef2;
+    text-align: left;
+}
+
+.table th {
+    background: #f6f8fa;
+    color: #57606a;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.table tr:last-child td {
+    border-bottom: none;
+}
+
+.status-pill {
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    display: inline-block;
+}
+
+.pill-ok {
+    background: #dafbe1;
+    color: #1a7f37;
+}
+
+.pill-off {
+    color: #8c959f;
+    font-style: italic;
+}
+
+.pill-alert {
+    background: #ffebe9;
+    color: #cf222e;
+}
+
+/* Diagnostics */
+.diag-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 13px;
+}
+
+.diag-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.diag-label {
+    color: #57606a;
+}
+
+.diag-value {
+    color: #1f2328;
+    font-weight: 500;
+}
+
+.form-select {
+    font-family: inherit;
+    font-size: 12px;
+    padding: 4px 8px;
+    border: 1px solid #d0d7de;
+    border-radius: 4px;
+    background: #ffffff;
+    color: #1f2328;
+    cursor: pointer;
+}
+
+/* LoRaWAN & Telemetry Payload Styles */
+.mono-text {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 12px;
+    background: #f6f8fa;
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid #d0d7de;
+    color: #0969da;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.eui-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.payload-box {
+    background: #f6f8fa;
+    border: 1px solid #d0d7de;
+    border-radius: 4px;
+    padding: 10px 12px;
+    margin-top: 12px;
+}
+
+.payload-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.payload-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #57606a;
+}
+
+.payload-len {
+    font-size: 11px;
+    color: #57606a;
+    font-weight: 500;
+}
+
+.payload-hex {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 12px;
+    line-height: 1.5;
+    color: #1f2328;
+    background: #ffffff;
+    border: 1px solid #d0d7de;
+    border-radius: 3px;
+    padding: 6px 8px;
+    white-space: pre-wrap;
+    word-break: break-all;
+    margin-bottom: 8px;
+    user-select: all;
+}
+
+.payload-decoded {
+    font-size: 12px;
+    color: #24292f;
+    line-height: 1.4;
+    padding-top: 6px;
+    border-top: 1px dashed #d0d7de;
+}
+
+.lora-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* AS7341 Spectral Channels Breakdown */
+.spectral-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+@media (min-width: 520px) {
+    .spectral-grid {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+.spec-channel {
+    background: #f6f8fa;
+    border: 1px solid #d0d7de;
+    border-radius: 4px;
+    padding: 6px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.spec-ch-name {
+    font-size: 11px;
+    font-weight: 600;
+    color: #57606a;
+    white-space: nowrap;
+}
+
+.spec-ch-val {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1f2328;
+}
+
+.spectral-indices {
+    display: flex;
+    gap: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed #d0d7de;
+}
+
+.spec-index-item {
+    flex: 1;
+    background: #f6f8fa;
+    border: 1px solid #d0d7de;
+    border-radius: 4px;
+    padding: 6px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* System Calibration & One-Shot Learning */
+.mb-2 {
+    margin-bottom: 8px;
+}
+
+.calib-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.calib-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.calib-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #57606a;
+}
+
+.calib-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.calib-status-box {
+    background: #f6f8fa;
+    border: 1px solid #d0d7de;
+    border-radius: 4px;
+    padding: 8px 10px;
+    margin-top: 10px;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+/* LoRa Serial Passthrough Terminal */
+.lora-terminal-card {
+    margin-top: 16px;
+}
+
+.terminal-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.terminal-console {
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    padding: 10px 12px;
+    height: 185px;
+    overflow-y: auto;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 12px;
+    line-height: 1.45;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.terminal-console::-webkit-scrollbar {
+    width: 6px;
+}
+
+.terminal-console::-webkit-scrollbar-track {
+    background: #0d1117;
+}
+
+.terminal-console::-webkit-scrollbar-thumb {
+    background: #30363d;
+    border-radius: 3px;
+}
+
+.terminal-console::-webkit-scrollbar-thumb:hover {
+    background: #58a6ff;
+}
+
+.terminal-line {
+    white-space: pre-wrap;
+    word-break: break-all;
+    margin-bottom: 3px;
+}
+
+.terminal-system {
+    color: #8b949e;
+    font-style: italic;
+}
+
+.terminal-tx {
+    color: #58a6ff;
+    font-weight: 500;
+}
+
+.terminal-rx {
+    color: #3fb950;
+}
+
+.terminal-rx-err {
+    color: #f85149;
+    font-weight: 500;
+}
+
+.terminal-chips {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.chip-btn {
+    background: #f6f8fa;
+    color: #24292f;
+    border: 1px solid #d0d7de;
+    border-radius: 12px;
+    padding: 3px 9px;
+    font-size: 11px;
+    font-family: ui-monospace, SFMono-Regular, monospace;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    user-select: none;
+}
+
+.chip-btn:hover {
+    background: #0969da;
+    color: #ffffff;
+    border-color: #0969da;
+}
+
+.chip-clear {
+    margin-left: auto;
+    color: #cf222e;
+    border-color: #fca5a5;
+    background: #fff5f5;
+}
+
+.chip-clear:hover {
+    background: #cf222e;
+    color: #ffffff;
+    border-color: #cf222e;
+}
+
+.terminal-input-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 2px;
+}
+
+.terminal-prompt {
+    font-family: ui-monospace, SFMono-Regular, monospace;
+    font-size: 14px;
+    font-weight: 700;
+    color: #0969da;
+    padding: 0 4px;
+    user-select: none;
+}
+
+.terminal-input {
+    flex: 1;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-family: ui-monospace, SFMono-Regular, monospace;
+    border: 1px solid #d0d7de;
+    border-radius: 4px;
+    background: #ffffff;
+    color: #1f2328;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.terminal-input:focus {
+    border-color: #0969da;
+    box-shadow: 0 0 0 2px rgba(9, 105, 218, 0.2);
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    font-size: 12px;
+    color: #8c959f;
+    padding: 12px 0;
+}

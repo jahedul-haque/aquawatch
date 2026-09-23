@@ -1,0 +1,110 @@
+{
+  "device": {
+    "name": "AquaWatch: Edge-AI LoRaWAN Water Quality Monitoring for Rural India",
+    "architecture": "Arduino UNO Q (STM32U585 MCU + Qualcomm QRB2210 MPU)",
+    "role": "Rural Piped Water & Groundwater Contamination Early-Warning Node",
+    "turbidity_sensor": "ASAIR AZDM01 Photoelectric 940nm Infrared Sensor"
+  },
+  "lorawan": {
+    "enabled": true,
+    "modem_model": "Ebyte E78-900M22S (ASR6505 + SX1262)",
+    "tx_power_dbm": 22,
+    "activation_mode": "OTAA",
+    "region": "IN865",
+    "channels_mhz": [
+      865.0625,
+      865.4025,
+      865.985
+    ],
+    "device_eui": "0123456789ABCDEF",
+    "app_eui": "0000000000000000",
+    "app_key": "2B7E151628AED2A6ABF7158809CF4F3C",
+    "f_port": 10,
+    "f_port_alert": 15,
+    "confirmed_uplink_on_alert": true,
+    "heartbeat_interval_minutes": 60,
+    "alert_debounce_seconds": 30,
+    "serial_port": "/dev/ttyUSB0",
+    "baudrate": 115200
+  },
+  "standards": {
+    "organization": "BIS IS 10500:2012 (Indian Standard Drinking Water) & Jal Jeevan Mission Guidelines",
+    "parameters": {
+      "temperature": {
+        "unit": "celsius",
+        "optimal_min": 10.0,
+        "optimal_max": 25.0,
+        "critical_max": 35.0,
+        "weight_wqi": 0.1
+      },
+      "ph": {
+        "unit": "pH",
+        "optimal_min": 6.5,
+        "optimal_max": 8.5,
+        "critical_min": 6.0,
+        "critical_max": 9.0,
+        "weight_wqi": 0.2
+      },
+      "turbidity": {
+        "unit": "NTU",
+        "ideal_max": 1.0,
+        "acceptable_max": 5.0,
+        "critical_max": 10.0,
+        "weight_wqi": 0.2
+      },
+      "tds": {
+        "unit": "ppm",
+        "excellent_max": 300.0,
+        "good_max": 600.0,
+        "acceptable_max": 1000.0,
+        "critical_max": 1200.0,
+        "weight_wqi": 0.15
+      },
+      "orp": {
+        "unit": "mV",
+        "disinfection_min": 650.0,
+        "acceptable_min": 500.0,
+        "anaerobic_max": 250.0,
+        "weight_wqi": 0.2
+      },
+      "visual_clarity": {
+        "unit": "percent",
+        "excellent_min": 85.0,
+        "acceptable_min": 60.0,
+        "critical_min": 40.0,
+        "weight_wqi": 0.15
+      }
+    }
+  },
+  "vision_thresholds": {
+    "max_acceptable_particles_per_frame": 15,
+    "critical_particles_per_frame": 50,
+    "discoloration_delta_e_threshold": 12.0,
+    "sheen_saturation_threshold": 125.0
+  },
+  "static_sensor_options": {
+    "ph": {
+      "use_static": true,
+      "static_value": 7.35,
+      "description": "Safe neutral drinking water baseline per BIS IS 10500:2012 (6.5 - 8.5)"
+    },
+    "tds": {
+      "use_static": true,
+      "static_value": 180.0,
+      "description": "Safe low-mineral drinking water baseline per BIS IS 10500:2012 (< 500 ppm)"
+    },
+    "orp": {
+      "use_static": true,
+      "static_value": 675.0,
+      "description": "Safe municipal chlorinated tap water baseline (> 650 mV)"
+    }
+  },
+  "sdcard_storage": {
+    "enabled": false,
+    "target_mount": "/media/sdcard",
+    "max_storage_gb": 16.0,
+    "save_companion_json": true,
+    "jpeg_quality": 85,
+    "description": "Optional MicroSD card image logging for 1-minute flow-cell snapshots. Set 'enabled' to false to disable disk writes and protect SD card endurance."
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "Clean_Potable": {
+    "category": "Clean_Potable",
+    "label": "Clean Potable Water (Baseline Zero)",
+    "timestamp": "2026-09-21 06:23:55",
+    "visual_features": [
+      92.28,
+      110.77,
+      122.72,
+      500.68,
+      5.61,
+      159.48
+    ],
+    "turbidity_ntu": 0.0,
+    "clarity_percent": 66.7,
+    "laplacian_variance": 500.37,
+    "discoloration_delta_e": 25.5,
+    "spectral": {
+      "f1": 6022,
+      "f2": 36269,
+      "f3": 52451,
+      "f4": 49037,
+      "f5": 61497,
+      "f6": 53318,
+      "f7": 61799,
+      "f8": 39953,
+      "clear": 65535,
+      "nir": 12553,
+      "algae_ndai": 0.212,
+      "cdom_index": 0.797,
+      "baseline_ndai": 0.212,
+      "baseline_cdom": 0.797,
+      "f5_f8_ratio": 1.539,
+      "f6_f1_ratio": 8.854
+    }
+  }
+}

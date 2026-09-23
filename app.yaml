@@ -1,0 +1,6 @@
+name: AquaWatch_Node
+description: AquaWatch is an autonomous, edge-AI-based water contamination early-warning system designed for continuous monitoring of drinking-water sources.
+ports:
+- 8000
+bricks: []
+icon: 💧
