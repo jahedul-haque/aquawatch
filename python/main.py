@@ -1,5 +1,11 @@
 """
-AquaWatch : Main entry point
+AquaWatch: Edge-AI LoRaWAN Rural Water Quality Monitor
+Arduino App Lab Entry Point (Qualcomm QRB2210 Linux)
+
+Compliant with Arduino App Lab specification:
+- python/main.py entry point
+- Ends with App.run()
+- Inter-core communication via Bridge
 """
 
 import sys
@@ -32,6 +38,8 @@ def start_web_server(host: str = "0.0.0.0", port: int = 8000):
 
 def main():
     print(f"================================================================")
+    print(f" AQUAWATCH: Rural India Water Quality Monitoring App")
+    print(f" Framework: Arduino App Lab (Qualcomm QRB2210 + STM32U585)")
     print(f" Web Dashboard & SCADA API: http://0.0.0.0:8000")
     print(f" Live Stream Video: http://0.0.0.0:8000/video_feed")
     print(f"================================================================")

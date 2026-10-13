@@ -1,5 +1,8 @@
 """
-Classifies the camera image to one of the category using pure classical computer vision.
+Edge Vision AI Classifier for Qualcomm QRB2210 (Debian Linux)
+Performs on-device visual water contamination classification and anomaly scoring
+on flow-cell camera frames.
+
 Classifies into 5 contamination categories:
 1. Clean_Potable
 2. Suspended_Sediment

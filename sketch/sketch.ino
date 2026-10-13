@@ -1,13 +1,14 @@
 /*
- * AquaWatch -- Code to grab the sensor Data and send it to Linux  processor through Remote Bridge
+ * Arduino UNO Q - AquaWatch: Edge-AI LoRaWAN Water Quality Monitoring for Rural India
+ * Real-Time MCU Firmware (STM32U585)
  * 
  * Hardware Connections:
  * - A0: Analog pH Sensor (0 - 3.3V scaled)
- * - A1: ASAIR AZDM01 Photoelectric Turbidity Sensor (940nm IR, 3.3V powered via 10k/30k voltage divider to 3.3V)
+ * - A1: ASAIR AZDM01 Photoelectric Turbidity Sensor (940nm IR, 5V powered via 10k/20k voltage divider to 3.3V)
  * - A2: Analog TDS Sensor (0 - 3.3V scaled)
  * - A3: Analog ORP Sensor (0 - 3.3V scaled, defaults to dummy baseline if probe absent)
  * - D2: DS18B20 Waterproof Temperature Sensor (1-Wire, 4.7k pullup to 3.3V)
- * - D0/D1 (or Serial1): LoRaWAN Modem () E78-900M22S )
+ * - D0/D1 (or Serial1): LoRaWAN Modem (IN865 Band: 865 - 867 MHz, e.g. Ebyte E78-900M22S [ASR6505 / SX1262, +22dBm])
  * - LED_BUILTIN: System Heartbeat & Alert Indicator
  */
 
@@ -33,13 +34,13 @@
 #endif
 
 // Hardware Options
-// Set to 1 if using physical probe; set to 0 to use safe static/dummy baseline .
+// Set to 1 if using physical probe; set to 0 to use safe static/dummy baseline (saves cost of expensive probes).
 #define USE_PHYSICAL_PH_SENSOR     0
 #define USE_PHYSICAL_TDS_SENSOR    0
 #define USE_PHYSICAL_ORP_SENSOR    0
 #define USE_AS7341_SPECTRAL_SENSOR 1  // 1 = Enable Adafruit AS7341 10-channel spectral analyzer (I2C addr 0x39)
 
-// Static Baseline Values
+// Static Baseline Values (Compliant with BIS IS 10500:2012 Drinking Water Standards)
 static const float PH_STATIC_NOMINAL       = 7.35f;  // Safe neutral drinking water baseline (BIS range: 6.5 - 8.5)
 static const float TDS_STATIC_NOMINAL_PPM  = 180.0f; // Safe mineral drinking water baseline (BIS limit: < 500 ppm)
 static const float ORP_DUMMY_NOMINAL_MV    = 675.0f; // Safe municipal chlorinated tap water baseline (> 650 mV)
@@ -300,7 +301,7 @@ void setupBridgeRPC() {
 }
 #endif
 
-// Forward declarations 
+// Forward declarations for boot sample
 void processSpectralSensor();
 void processAnalogSensors();
 void processTemperatureSensor();
@@ -404,7 +405,7 @@ void setup() {
 
 
 void processAnalogSensors() {
-    // 1. Turbidity Measurement
+    // 1. Turbidity Measurement (Physical Sensor: ASAIR AZDM01 Photoelectric 940nm)
     int rawTurbidity = readOversampledADC(PIN_TURBIDITY, 64);
     filterRawTurbidity.addSample(rawTurbidity);
     int medianTurbidity = filterRawTurbidity.getMedian();

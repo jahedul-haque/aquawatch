@@ -1,5 +1,5 @@
-name: AquaWatch_Node
-description: AquaWatch is an autonomous, edge-AI-based water contamination early-warning system designed for continuous monitoring of drinking-water sources.
+name: AquaWatchNode
+description: Edge-AI LoRaWAN Water Quality Monitoring for Rural India (Jal Jeevan Mission). AZDM01 Photoelectric Turbidity, Adafruit AS7341 Spectrophotometry, and Vision AI.
 ports:
 - 8000
 bricks: []

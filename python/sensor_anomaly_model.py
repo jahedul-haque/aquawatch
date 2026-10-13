@@ -1,6 +1,7 @@
 """
-Multi Modal, Fuses the data from camera,Spectral and other physical sensor to create a 
-anomaly score and confidence.
+Multi-Modal Edge ML Anomaly Detection Model for AquaGuard
+Fuses 5 physical-chemical sensor telemetry channels with optical vision metrics
+to perform multi-variate predictive contamination detection and sensor fault diagnosis.
 """
 
 import numpy as np

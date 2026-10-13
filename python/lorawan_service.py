@@ -1,6 +1,11 @@
 """
-LoraWAN service , Probes the Lora Modem through the RPC bridge , get the DEVEUI and other paraamters through the bridge , 
-also check if USB to serial is connected and Lora mode is connected directly to the usb hub.
+LoRaWAN Alert & Telemetry Service for AquaWatch Municipal & Rural Water Monitor
+Communicates with physical LoRaWAN AT modem (Ebyte E78-900M22S / ASR6505 / Semtech SX1262)
+via serial AT commands.
+
+Probes actual hardware over serial ports using AT commands to query live DEVEUI (AT+CDEVEUI?)
+and APPSKEY (AT+CAPPSKEY?). Supports setting DEVEUI via AT command (AT+CDEVEUI=...).
+If no modem is detected, strictly reports "Node not found" and does NOT assume any values.
 """
 
 import json

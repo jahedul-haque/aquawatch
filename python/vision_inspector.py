@@ -1,5 +1,6 @@
 """
-Does the Visual inspection of the camera image
+Qualcomm QRB2210 Computer Vision Inspection Pipeline for Water Contamination
+Analyzes water inside an optical flow-cell or inspection chamber via USB Camera.
 
 Inspection Features:
 1. Visual Clarity / Opacity Index (Laplacian variance & edge contrast)

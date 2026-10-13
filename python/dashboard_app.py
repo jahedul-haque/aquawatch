@@ -1,5 +1,12 @@
 """
-UI based on FastAPI, get the sample , run count down timer, get sample automatically after 10 mins
+FastAPI Dashboard & 1-Minute Cadence Sampling Coordinator
+Qualcomm QRB2210 (Debian Linux)
+
+Cadence:
+1. Every 60 seconds: Captures water snapshot from USB camera & reads STM32 sensors.
+2. Saves image to SD card (/media/sdcard/samples/water_YYYY-MM-DD_HH-MM-SS.jpg).
+3. Evaluates WQI & Edge AI models; immediately dispatches LoRaWAN alert if contaminated.
+4. Broadcasts minimal telemetry & countdown timer to the web UI.
 """
 
 import asyncio

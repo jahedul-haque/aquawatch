@@ -1,37 +1,37 @@
 {
-  "Clean_Potable": {
-    "category": "Clean_Potable",
-    "label": "Clean Potable Water (Baseline Zero)",
-    "timestamp": "2026-09-21 06:23:55",
+  "Suspended_Sediment": {
+    "category": "Suspended_Sediment",
+    "label": "High Turbidity / Muddy Water",
+    "timestamp": "2026-10-11 14:57:16",
     "visual_features": [
-      92.28,
-      110.77,
-      122.72,
-      500.68,
-      5.61,
-      159.48
+      94.61,
+      124.91,
+      128.53,
+      50.65,
+      1.75,
+      57.75
     ],
     "turbidity_ntu": 0.0,
-    "clarity_percent": 66.7,
-    "laplacian_variance": 500.37,
-    "discoloration_delta_e": 25.5,
+    "clarity_percent": 6.3,
+    "laplacian_variance": 47.61,
+    "discoloration_delta_e": 14.03,
     "spectral": {
-      "f1": 6022,
-      "f2": 36269,
-      "f3": 52451,
-      "f4": 49037,
-      "f5": 61497,
-      "f6": 53318,
-      "f7": 61799,
-      "f8": 39953,
-      "clear": 65535,
-      "nir": 12553,
-      "algae_ndai": 0.212,
-      "cdom_index": 0.797,
-      "baseline_ndai": 0.212,
-      "baseline_cdom": 0.797,
-      "f5_f8_ratio": 1.539,
-      "f6_f1_ratio": 8.854
+      "f1": 1453,
+      "f2": 6413,
+      "f3": 9506,
+      "f4": 10579,
+      "f5": 13697,
+      "f6": 14218,
+      "f7": 15809,
+      "f8": 11255,
+      "clear": 44605,
+      "nir": 3350,
+      "algae_ndai": 0.098,
+      "cdom_index": 0.815,
+      "baseline_ndai": 0.098,
+      "baseline_cdom": 0.815,
+      "f5_f8_ratio": 1.217,
+      "f6_f1_ratio": 9.785
     }
   }
 }

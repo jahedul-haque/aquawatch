@@ -1,5 +1,11 @@
 """
-Optional image storing to SD Card
+MicroSD Card Storage Manager for AquaGuard / AquaWatch (QRB2210 Linux)
+Handles 1-minute periodic water sample image logging, companion metadata,
+and circular storage cleanup.
+
+Supports optional image logging configured through config/thresholds.json
+or runtime API. When disabled, disk writes are skipped to protect SD card
+endurance while still allowing in-memory preview on the SCADA dashboard.
 """
 
 import cv2

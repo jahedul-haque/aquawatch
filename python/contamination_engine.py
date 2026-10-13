@@ -1,5 +1,9 @@
 """
-Fuses the Physical sensor reading with spectral and camera vision to calculate the water Quality.
+AquaWatch: Edge-AI LoRaWAN Water Quality Monitoring for Rural India
+Fuses real-time physical-chemical sensor telemetry (STM32 MCU with AZDM01 Turbidity)
+with optical computer vision metrics and Edge AI inference (QRB2210 MPU)
+to compute a composite Water Quality Index (WQI), AI anomaly probability,
+and diagnose contamination hazards according to BIS IS 10500:2012 and Jal Jeevan Mission standards.
 """
 
 import json
@@ -42,8 +46,10 @@ class ContaminationEngine:
         self.sensor_anomaly = SensorAnomalyModel()
         self.last_hazard_code = 0x00
         self.spectral_baseline: Dict[str, Any] = {
-            "baseline_ndai": 0.48,
-            "baseline_cdom": 0.42,
+            "baseline_ndai": 0.11,
+            "baseline_cdom": 0.75,
+            "clear_ref": 59855.0,
+            "vis_sum_ref": 114284.0,
             "is_calibrated": False
         }
 
@@ -73,28 +79,17 @@ class ContaminationEngine:
 
         camera_detected = vision_data.get("camera_detected", True)
 
-        # 0. Compute baseline-compensated spectral indices (delta_ndai, delta_cdom)
+                # 0. Compute baseline-compensated spectral indices (delta_ndai, delta_cdom)
         if "spectral" in mcu_data and isinstance(mcu_data["spectral"], dict):
             spec = mcu_data["spectral"]
             raw_ndai = float(spec.get("algae_ndai", 0.0))
             raw_cdom = float(spec.get("cdom_index", 0.0))
-            base_ndai = float(self.spectral_baseline.get("baseline_ndai", 0.48))
-            base_cdom = float(self.spectral_baseline.get("baseline_cdom", 0.42))
             is_calib = bool(self.spectral_baseline.get("is_calibrated", False))
+            base_ndai = float(self.spectral_baseline.get("baseline_ndai", 0.11)) if is_calib else 0.11
+            base_cdom = float(self.spectral_baseline.get("baseline_cdom", 0.75)) if is_calib else 0.75
 
-            if raw_ndai <= 0.15:
-                delta_ndai = 0.0
-            elif is_calib:
-                delta_ndai = round(raw_ndai - base_ndai, 3)
-            else:
-                delta_ndai = round(raw_ndai - base_ndai, 3)
-
-            if raw_cdom <= 0.15:
-                delta_cdom = 0.0
-            elif is_calib:
-                delta_cdom = round(raw_cdom - base_cdom, 3)
-            else:
-                delta_cdom = round(raw_cdom - base_cdom, 3)
+            delta_ndai = round(max(0.0, raw_ndai - base_ndai), 3) if raw_ndai > 0.12 else 0.0
+            delta_cdom = round(max(0.0, raw_cdom - base_cdom), 3) if raw_cdom > 0.75 else 0.0
 
             spec["delta_ndai"] = delta_ndai
             spec["delta_cdom"] = delta_cdom
@@ -322,7 +317,7 @@ class ContaminationEngine:
             "temp_connected": temp_conn
         }
 
-        # 3. AS7341 Multi-Spectral Classification
+                # 3. AS7341 Multi-Spectral Classification (Relative to NDAI & CDOM Thresholds)
         spec = mcu_data.get("spectral", {})
         spec_detected = bool(spec.get("detected", False)) and any(spec.get(f"f{i}", 0) > 0 for i in range(1, 9))
         if not spec_detected:
@@ -338,39 +333,48 @@ class ContaminationEngine:
             raw_cdom = float(spec.get("cdom_index", 0.0))
             delta_ndai = float(spec.get("delta_ndai", 0.0))
             delta_cdom = float(spec.get("delta_cdom", 0.0))
-            base_ndai = float(self.spectral_baseline.get("baseline_ndai", 0.48))
-            base_cdom = float(self.spectral_baseline.get("baseline_cdom", 0.64))
+            base_ndai = float(self.spectral_baseline.get("baseline_ndai", 0.11))
+            base_cdom = float(self.spectral_baseline.get("baseline_cdom", 0.75))
             is_calibrated = bool(self.spectral_baseline.get("is_calibrated", False))
 
-            if is_calibrated and abs(delta_cdom) < 0.0001 and abs(raw_cdom) > 0.001:
-                delta_cdom = raw_cdom - base_cdom
+            # Thresholds:
+            # - Algae NDAI Threshold = 0.60 (Clean baseline ~ 0.11)
+            # - CDOM Index Threshold = 0.85 (Clean baseline ~ 0.75 - 0.78)
+            ndai_threshold = 0.60
+            cdom_threshold = 0.85
 
-            if raw_ndai <= 0.15:
-                is_algae = False
-            elif is_calibrated:
-                is_algae = delta_ndai >= 0.12
-            else:
-                is_algae = (raw_ndai >= 0.60) or (delta_ndai >= 0.12)
-
-            # Clean water / white paper optical corroboration:
-            # Clean potable water or white paper reflection has low turbidity, high clarity, and minimal color shift
-            clarity_val = float(vision_data.get("clarity_percent", 100.0))
-            delta_e_val = float(vision_data.get("discoloration_delta_e", 0.0))
-            is_clean_optics = (turb <= 1.0 and clarity_val >= 88.0 and delta_e_val <= 4.0) or (turb <= 1.0 and v_class == "Clean_Potable")
-
-            if is_algae:
-                spec_status = "CRITICAL" if (delta_ndai >= 0.30 or raw_ndai >= 0.75) else "WARNING"
-                spec_title = "Algae Detected"
-                spec_desc = f"Chlorophyll-a absorption detected (NDAI: {raw_ndai:+.2f}, Δ:{delta_ndai:+.2f})."
-            elif not is_clean_optics and ((is_calibrated and delta_cdom >= 0.25) or (not is_calibrated and (raw_cdom >= 0.85 or delta_cdom >= 0.25))):
+            if raw_ndai >= ndai_threshold:
+                spec_title = f"NDAI High ({raw_ndai:.2f})"
                 spec_status = "CRITICAL"
-                spec_title = "Organic Matter"
-                spec_desc = f"Organic matter or sewage signature detected (CDOM: {raw_cdom:+.2f}, Δ:{delta_cdom:+.2f})."
+                spec_desc = f"NDAI High ({raw_ndai:+.2f}) exceeds threshold ({ndai_threshold:.2f}) - Algae / chlorophyll signature detected."
+            elif raw_cdom >= cdom_threshold:
+                spec_title = f"CDOM High ({raw_cdom:.2f})"
+                spec_status = "CRITICAL"
+                spec_desc = f"CDOM High ({raw_cdom:+.2f}) exceeds threshold ({cdom_threshold:.2f}) - Dissolved organic matter detected."
+            elif raw_ndai >= 0.38:
+                spec_title = f"NDAI High ({raw_ndai:.2f})"
+                spec_status = "WARNING"
+                spec_desc = f"NDAI High ({raw_ndai:+.2f}) is close to threshold ({ndai_threshold:.2f}) - Elevated algae / green signature."
+            elif raw_cdom >= 0.81:
+                spec_title = f"CDOM High ({raw_cdom:.2f})"
+                spec_status = "WARNING"
+                spec_desc = f"CDOM High ({raw_cdom:+.2f}) is close to threshold ({cdom_threshold:.2f}) - Elevated organic matter."
+            elif raw_ndai >= 0.22:
+                spec_title = f"NDAI Medium ({raw_ndai:.2f})"
+                spec_status = "WARNING"
+                spec_desc = f"NDAI Medium ({raw_ndai:+.2f}) is moderately elevated (Threshold: {ndai_threshold:.2f})."
+            elif raw_cdom >= 0.79:
+                spec_title = f"CDOM Medium ({raw_cdom:.2f})"
+                spec_status = "WARNING"
+                spec_desc = f"CDOM Medium ({raw_cdom:+.2f}) is moderately elevated (Threshold: {cdom_threshold:.2f})."
+            elif raw_ndai >= 0.16:
+                spec_title = f"NDAI Low ({raw_ndai:.2f})"
+                spec_status = "SAFE"
+                spec_desc = f"NDAI Low ({raw_ndai:+.2f}) is well below threshold ({ndai_threshold:.2f}). Within safe limits."
             else:
                 spec_status = "SAFE"
                 spec_title = "Clean"
-                spec_desc = "Normal optical spectrum. Clear water baseline verified."
-
+                spec_desc = f"Normal optical spectrum (NDAI: {raw_ndai:+.2f}/{ndai_threshold:.2f}, CDOM: {raw_cdom:+.2f}/{cdom_threshold:.2f}). Clear baseline verified."
 
             spectral_info = {
                 "title": spec_title,
