@@ -11,7 +11,7 @@ The **Arduino UNO Q** integrates an **STM32U585 MCU** (handling deterministic re
 | Function | Arduino UNO Q Header Pin | Target Sensor / Actuator | Signal Type | Electrical Requirement |
 | :--- | :--- | :--- | :--- | :--- |
 | **pH Probe** | `A0` | Analog pH Signal Board *(Optional / Static: 7.35)* | Analog ($0 - 3.3\text{ V}$) | High-Z BNC (or leave open for safe static baseline) |
-| **Turbidity** | `A1` | **ASAIR AZDM01 Photoelectric (940nm IR)** | Analog ($0 - 3.3\text{ V}$ scaled) | 5V powered; 10k/20k divider to Pin A1 |
+| **Turbidity** | `A1` | **ASAIR AZDM01 Photoelectric (940nm IR)** | Analog ($0 - 3.3\text{ V}$ scaled) | 3.3V powered; 10k/30k divider to Pin A1 |
 | **TDS Sensor** | `A2` | Analog TDS Conductivity Probe *(Optional / Static: 180 ppm)* | Analog ($0 - 2.3\text{ V}$) | AC-excited board (or leave open for safe static baseline) |
 | **ORP Probe** | `A3` | Redox Potential Board *(Optional / Static: 675 mV)* | Analog ($0 - 3.3\text{ V}$) | $1.65\text{ V}$ midpoint (or leave open for safe static baseline) |
 | **Water Temp** | `D2` | DS18B20 Waterproof Probe | Digital (1-Wire) | $4.7\text{ k}\Omega$ pull-up resistor to $+3.3\text{ V}$ |
