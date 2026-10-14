@@ -10,15 +10,15 @@ The **Arduino UNO Q** integrates an **STM32U585 MCU** (handling deterministic re
 
 | Function | Arduino UNO Q Header Pin | Target Sensor / Actuator | Signal Type | Electrical Requirement |
 | :--- | :--- | :--- | :--- | :--- |
-| **pH Probe** | `A0` | Analog pH Signal Board *(Optional / Static: 7.35)* | Analog ($0 - 3.3\text{ V}$) | High-Z BNC (or leave open for safe static baseline) |
+| **pH Probe** | `A0` | Analog pH Signal Board *(Not connected in current prototype / Static: 7.35)* | Analog ($0 - 3.3\text{ V}$) | High-Z BNC (Not connected in current prototype) |
 | **Turbidity** | `A1` | **ASAIR AZDM01 Photoelectric (940nm IR)** | Analog ($0 - 3.3\text{ V}$ scaled) | 3.3V powered; 10k/30k divider to Pin A1 |
-| **TDS Sensor** | `A2` | Analog TDS Conductivity Probe *(Optional / Static: 180 ppm)* | Analog ($0 - 2.3\text{ V}$) | AC-excited board (or leave open for safe static baseline) |
-| **ORP Probe** | `A3` | Redox Potential Board *(Optional / Static: 675 mV)* | Analog ($0 - 3.3\text{ V}$) | $1.65\text{ V}$ midpoint (or leave open for safe static baseline) |
+| **TDS Sensor** | `A2` | Analog TDS Conductivity Probe *(Not connected in current prototype / Static: 180 ppm)* | Analog ($0 - 2.3\text{ V}$) | AC-excited board (Not connected in current prototype) |
+| **ORP Probe** | `A3` | Redox Potential Board *(Not connected in current prototype / Static: 675 mV)* | Analog ($0 - 3.3\text{ V}$) | $1.65\text{ V}$ midpoint (Not connected in current prototype) |
 | **Water Temp** | `D2` | DS18B20 Waterproof Probe | Digital (1-Wire) | $4.7\text{ k}\Omega$ pull-up resistor to $+3.3\text{ V}$ |
 | **Spectral Sensor** | `SDA / SCL` | **Adafruit AS7341 10-Channel Spectrophotometer** | Digital (I2C 0x39) | Direct 3.3V / 5V I2C; Onboard LED illumination |
 | **LoRaWAN Radio**| `D0 / D1` (or USB-UART) | **Ebyte E78-900M22S** (ASR6505 / SX1262) | 3.3V UART (9600 baud) | **IN865 Band (865 - 867 MHz)**; +22 dBm RF power |
-| **USB Camera** | `USB-A / USB-C Host` | UVC Compliant USB Camera (720p/1080p) | USB 2.0 / 3.0 | Connected directly to QRB2210 Host port |
-| **Power In** | `VIN` or `Barrel Jack` | External Regulated DC Power Supply | $7\text{ V} - 12\text{ V}$ DC ($>2.5\text{ A}$) | Supplies both QRB2210 MPU and STM32 |
+| **USB Camera** | `USB-A / USB-C Host` | UVC Compliant USB Camera (720p/1080p) | USB 2.0 / 3.0 | Connected directly to QRB2210 Host port through USB HuB|
+| **Power In** | `USB-C` | Input to USB HUB USB-C PD port   |5V 2A Wall charger| Supplies both QRB2210 MPU and STM32 |
 
 
 ---
