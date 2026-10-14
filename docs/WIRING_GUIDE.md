@@ -38,27 +38,23 @@ The **ASAIR AZDM01** is a high-reliability photoelectric turbidity sensor utiliz
           │           │
           │           └─── [R1: 10 kΩ, 0.1%] ──┬──> To STM32 Pin A1 (0 - 3.3V)
           │                                    │
-          │                               [R2: 20 kΩ, 0.1%]
+          │                               [R2: 30 kΩ, 0.1%]
           │                                    │
           │                                   GND
           │
-          └─── Connect to +5V Rail (4.8V - 5.5V DC)
+          └─── Connect to +3.3V Rail (4.8V - 5.5V DC)
 ```
 
 ### Voltage Divider Math:
 - **Clean Water Output ($U_0$)**: $3.80\text{ V}$ nominal at Pin 2 (PT).
 - **Divider Attenuation Factor**:
-  $$\text{Divider Ratio} = \frac{R_2}{R_1 + R_2} = \frac{20\text{ k}\Omega}{10\text{ k}\Omega + 20\text{ k}\Omega} = \frac{2}{3} \approx 0.6667$$
+  $$\text{Divider Ratio} = \frac{R_2}{R_1 + R_2} = \frac{30\text{ k}\Omega}{10\text{ k}\Omega + 30\text{ k}\Omega} = \frac{2}{3} \approx 0.75$$
 - **Voltage at STM32 Pin A1 in Clean Water**:
-  $$V_{\text{ADC}} = 3.80\text{ V} \times 0.6667 = 2.533\text{ V}$$
+  $$V_{\text{ADC}} = 3.19\text{ V} \times 0.75 = 2.39\text{ V}$$
   This safely stays below the $3.30\text{ V}$ ceiling of the STM32 ADC.
 - The firmware automatically multiplies by $1.5\times$ to reconstruct true $U_m$ and computes the turbidity ratio $f = U_m / U_0$.
 
-> [!CAUTION]
-> **Do NOT connect AZDM01 Pin 2 (PT) directly to STM32 Pin A1 without the resistor divider.**
-> Direct connection of 3.8V – 5.0V will exceed the STM32U585 3.3V absolute maximum rating.
 
----
 
 ## 3. Grounding & Anti-Interference Isolation (Star Ground)
 
